@@ -10,5 +10,30 @@ export default defineSchema({
         clerkId : v.string(),
         
     }).index("by_clerk_id", ["clerkId"]),
+
+    interviews: defineTable({
+        title: v.string(),
+        description: v.optional(v.string()),
+        startTime: v.number(),
+        endTime: v.optional(v.number()),
+        status: v.union(v.literal("pending"), v.literal("completed"), v.literal("cancelled")),
+        streamCallId: v.string(),
+        candidateId: v.string(),
+        interviewerId: v.string(),
+    }).index("by_candidate_id",["candidateId"]).index("by_stream_call_id",["streamCallId"]),
+
+
+    comments: defineTable({
+        content: v.string(),
+        rating: v.number(),
+        interviewerId: v.string(),
+        interviewId: v.id("interviews"),
+    }).index("by_interview_id",["interviewId"]),
+
+    // streamCalls: defineTable({
+    //     callId: v.string(),
+    //     interviewId: v.id("interviews"),
+    //     createdAt: v.number(),
+    // }).index("by_interview_id",["interviewId"]),
 });
 
