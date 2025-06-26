@@ -17,7 +17,27 @@ export const getMyInterviews = query({
         if (!identity){
             throw new Error("Unauthorized");
         }
-        return await ctx.db.query("interviews").withIndex("by_candidate_id", (q) => q.eq("candidateId", identity.subject)).collect();
+        
+        const candidateInterviews = await ctx.db
+            .query("interviews")
+            .withIndex("by_candidate_id", (q) => q.eq("candidateId", identity.subject))
+            .collect();
+        
+        const allInterviews = await ctx.db.query("interviews").collect();
+        
+        const interviewerInterviews = allInterviews.filter(interview => 
+            interview.interviewerIds.includes(identity.subject)
+        );
+        
+        const allUserInterviews = [...candidateInterviews];
+        
+        for (const interview of interviewerInterviews) {
+            if (!allUserInterviews.some(existing => existing._id === interview._id)) {
+                allUserInterviews.push(interview);
+            }
+        }
+        
+        return allUserInterviews.sort((a, b) => b.startTime - a.startTime);
     }
 });
 
