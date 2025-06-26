@@ -35,10 +35,10 @@ export const createInterview = mutation({
         title: v.string(),
         description: v.optional(v.string()),
         startTime: v.number(),
-        status: v.union(v.literal("pending"), v.literal("completed"), v.literal("cancelled")),
+        status: v.union(v.literal("upcoming"), v.literal("completed"), v.literal("cancelled")),
         streamCallId: v.string(),
         candidateId: v.string(),
-        interviewerId: v.string(),
+        interviewerIds: v.array(v.string()),
     },
     handler: async (ctx, args) => {
         const identity = await ctx.auth.getUserIdentity();
@@ -57,7 +57,7 @@ export const createInterview = mutation({
 export const updateInterviewStatus = mutation({
     args: {
         interviewId: v.id("interviews"),
-        status: v.union(v.literal("pending"), v.literal("completed"), v.literal("cancelled")),
+        status: v.union(v.literal("upcoming"), v.literal("completed"), v.literal("cancelled")),
     },
     handler: async (ctx, args) => {
         return await ctx.db.patch(args.interviewId, {

@@ -16,10 +16,10 @@ export default defineSchema({
         description: v.optional(v.string()),
         startTime: v.number(),
         endTime: v.optional(v.number()),
-        status: v.union(v.literal("pending"), v.literal("completed"), v.literal("cancelled")),
+        status: v.union(v.literal("upcoming"), v.literal("completed"), v.literal("cancelled")),
         streamCallId: v.string(),
         candidateId: v.string(),
-        interviewerId: v.string(),
+        interviewerIds: v.array(v.string()),
     }).index("by_candidate_id",["candidateId"]).index("by_stream_call_id",["streamCallId"]),
 
 
