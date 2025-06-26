@@ -23,9 +23,9 @@ function DashboardPage() {
   const interviews = useQuery(api.interviews.getAllInterviews);
   const updateStatus = useMutation(api.interviews.updateInterviewStatus);
 
-  const handleStatusUpdate = async (interviewId: Id<"interviews">, status: string) => {
+  const handleStatusUpdate = async (interviewId: Id<"interviews">, status: "upcoming" | "completed" | "cancelled") => {
     try {
-      await updateStatus({ id: interviewId, status });
+      await updateStatus({ interviewId, status });
       toast.success(`Interview marked as ${status}`);
     } catch (error) {
       toast.error("Failed to update status");
@@ -96,7 +96,7 @@ function DashboardPage() {
                             <div className="flex gap-2 w-full">
                               <Button
                                 className="flex-1"
-                                onClick={() => handleStatusUpdate(interview._id, "succeeded")}
+                                onClick={() => handleStatusUpdate(interview._id, "completed")}
                               >
                                 <CheckCircle2Icon className="h-4 w-4 mr-2" />
                                 Pass
@@ -104,7 +104,7 @@ function DashboardPage() {
                               <Button
                                 variant="destructive"
                                 className="flex-1"
-                                onClick={() => handleStatusUpdate(interview._id, "failed")}
+                                onClick={() => handleStatusUpdate(interview._id, "cancelled")}
                               >
                                 <XCircleIcon className="h-4 w-4 mr-2" />
                                 Fail
